@@ -1,7 +1,16 @@
 const express = require('express', 4.17)
 const fs = require('fs')
-const app = express()
+const app = express();
+const bodyParser = require('body-parser')
 const port = 3000
+const quotesPath = '../NodeMongo-MS-QuoteMachine/Repository/MS-Quotes.json';
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
 
 app.get('/ping', (req, res) => {
     res.send("pong");
@@ -9,11 +18,18 @@ app.get('/ping', (req, res) => {
 
 app.get('/quotes', (req, res) => {
     console.log("hitting quotes");
-    const quotes = fs.createReadStream('../NodeMongo-MS-QuoteMachine/Repository/MS-Quotes.json');
-    quotes.pipe(res);
-})
+    const quotes = fs.readFileSync(quotesPath);
+    var json = JSON.parse(quotes);
+    res.send(json);
+});
 
-app.post('/quotes')
+app.post('/addQuote', (req, res) => {
+    const quote = req.body;
+    const jsonRaw = fs.readFileSync(quotesPath);
+    const json = JSON.parse(jsonRaw);
+    json.quotes.push(quote);
+    fs.writeFileSync(quotesPath, JSON.stringify(json));
+});
 
 app.listen(port, () => {
     console.log('MS-QuotesAPI listening at http://localhost:3000');

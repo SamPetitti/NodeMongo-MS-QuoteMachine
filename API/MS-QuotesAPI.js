@@ -1,14 +1,16 @@
 const express = require('express', 4.17)
 const fs = require('fs')
 const app = express();
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const { Http2ServerResponse } = require('http2');
 const port = 3000
 const quotesPath = '../NodeMongo-MS-QuoteMachine/Repository/MS-Quotes.json';
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger.json');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const mongoClient = require('mongodb').MongoClient;
+// const swaggerUi = require('swagger-ui-express');
+// const swaggerDocument = require('./swagger.json');
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 
@@ -20,7 +22,7 @@ app.get('/quotes', (req, res) => {
     console.log("hitting quotes");
     const quotes = fs.readFileSync(quotesPath);
     var json = JSON.parse(quotes);
-    res.send(json);
+    res.status(202).send(json);
 });
 
 app.post('/addQuote', (req, res) => {
@@ -29,6 +31,7 @@ app.post('/addQuote', (req, res) => {
     const json = JSON.parse(jsonRaw);
     json.quotes.push(quote);
     fs.writeFileSync(quotesPath, JSON.stringify(json));
+    return res.status(202).send({ message: `Quote ${JSON.stringify(quote.quote)} added` });
 });
 
 app.listen(port, () => {

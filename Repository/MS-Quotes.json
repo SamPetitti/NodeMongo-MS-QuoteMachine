@@ -1,1 +1,16 @@
-{"quotes":[{"id":"1","quote":"Would I rather be feared or loved? Easy. Both. I want people to be afraid of how much they love me."},{"id":"2","quote":"Wikipedia is the best thing ever. Anyone in the world can write anything they want about any subject. So you know you are getting the best possible information."},{"id":"3","quote":"Guess what, I have flaws. What are they? Oh, I don’t know. I sing in the shower. Sometimes I spend too much time volunteering. Occasionally I’ll hit somebody with my car. So sue me."},{"id":4,"quote":"this is a test quote to add"}]}
+{
+    "quotes": [
+        {
+            "id": "1",
+            "quote": "Would I rather be feared or loved? Easy. Both. I want people to be afraid of how much they love me."
+        },
+        {
+            "id": "2",
+            "quote": "Wikipedia is the best thing ever. Anyone in the world can write anything they want about any subject. So you know you are getting the best possible information."
+        },
+        {
+            "id": "3",
+            "quote": "Guess what, I have flaws. What are they? Oh, I don’t know. I sing in the shower. Sometimes I spend too much time volunteering. Occasionally I’ll hit somebody with my car. So sue me."
+        }
+    ]
+}

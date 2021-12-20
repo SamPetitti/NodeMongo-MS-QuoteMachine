@@ -8,11 +8,6 @@ const quotesPath = '../NodeMongo-MS-QuoteMachine/Repository/MS-Quotes.json';
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const mongoClient = require('mongodb').MongoClient;
-// const swaggerUi = require('swagger-ui-express');
-// const swaggerDocument = require('./swagger.json');
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-
 
 app.get('/ping', (req, res) => {
     res.send("pong");

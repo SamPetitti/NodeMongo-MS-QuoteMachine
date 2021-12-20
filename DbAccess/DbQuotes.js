@@ -1,12 +1,14 @@
-const { MongoClient } = require('mongodb');
-require("dotenv").config();
-const db = "sample_airbnb";
-const collection = "listingsAndReviews";
+//const { MongoClient } = require('mongodb');
+import { default as mongodb } from 'mongodb';
+//require("dotenv").config();
+import dotenv from 'dotenv';
+dotenv.config();
+const db = "ms_quote_machine";
+const collection = "quotes";
+const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@sp-training.uoozx.mongodb.net/?retryWrites=true&w=majority`;
 async function main() {
-    var userName = process.env.DB_USERNAME;
-    const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@sp-training.uoozx.mongodb.net/?retryWrites=true&w=majority`;
 
-    const client = new MongoClient(uri);
+    const client = new mongodb.MongoClient(uri);
 
     try {
         await client.connect();
@@ -48,8 +50,10 @@ async function main() {
         //     bathrooms: 2
         // });
         // await updateAllListingsToIncludePropertyType(client);
-
-        await listDatabases(client);
+        // //await addQuote(client, {
+        //     quote: "Would I rather be feared or loved? Easy. Both. I want people to be afraid of how much they love me."
+        // });
+        //await listDatabases(client);
 
     } catch (e) {
         console.error(e);
@@ -62,8 +66,21 @@ async function main() {
 //*******run program 
 main().catch(console.error);
 
+//**client */
+export async function getClient() {
+    return new mongodb.MongoClient(uri);
+}
 
-//*********create
+//*********add quote
+export async function addQuote(quote) {
+    const client = new mongodb.MongoClient(uri);
+    await client.connect();
+
+    const result = await client.db(db).collection(collection)
+        .insertOne(quote);
+    console.log(result);
+    client.close;
+}
 async function createMultipleListings(client, newListings) {
     const result = await client.db("sample_airbnb")
         .collection("listingsAndReviews")

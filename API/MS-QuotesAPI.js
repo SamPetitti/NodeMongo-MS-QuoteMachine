@@ -1,23 +1,20 @@
 import express from 'express';
-//const fs = require('fs')
 const app = express();
 import bodyParser from 'body-parser';
-// const { Http2ServerResponse } = require('http2');
-import { Http2ServerRequest } from 'http2';
-const port = 3000
-const quotesPath = '../NodeMongo-MS-QuoteMachine/Repository/MS-Quotes.json';
+const port = 3000;
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-import { getClient, addQuote } from '../DbAccess/DbQuotes.js';
+import { getQuotes, addQuote, addRatingToQuote } from '../DbAccess/DbQuotes.js';
 app.get('/ping', (req, res) => {
     res.send("pong");
 })
 
-app.get('/quotes', (req, res) => {
+app.get('/quotes', async (req, res) => {
     console.log("hitting quotes");
-    const quotes = fs.readFileSync(quotesPath);
-    var json = JSON.parse(quotes);
-    res.status(202).send(json);
+    const quotes = await getQuotes();
+    console.log(quotes);
+    // const quotesJson = JSON.parse(quotes);
+    res.status(200).send(quotes);
 });
 
 app.post('/quote', (req, res) => {
@@ -25,6 +22,14 @@ app.post('/quote', (req, res) => {
     addQuote(quote);
     return res.status(202).send({ message: `Quote ${JSON.stringify(quote.quote)} added` });
 });
+
+app.put('/quote', async (req, res) => {
+    const quote = req.body;
+    addRatingToQuote(quote._id, quote.rating);
+    res.status(204).send({ message: `Quote ${JSON.stringify(quote.quote)} added` });
+});
+
+
 
 app.listen(port, () => {
     console.log('MS-QuotesAPI listening at http://localhost:3000');

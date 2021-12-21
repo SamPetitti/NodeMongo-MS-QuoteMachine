@@ -1,7 +1,7 @@
 //const { MongoClient } = require('mongodb');
 import { default as mongodb } from 'mongodb';
 //require("dotenv").config();
-import dotenv from 'dotenv';
+import dotenv, { config } from 'dotenv';
 dotenv.config();
 const db = "ms_quote_machine";
 const collection = "quotes";
@@ -64,7 +64,7 @@ async function main() {
 }
 
 //*******run program 
-main().catch(console.error);
+//main().catch(console.error);
 
 //**client */
 export async function getClient() {
@@ -75,12 +75,37 @@ export async function getClient() {
 export async function addQuote(quote) {
     const client = new mongodb.MongoClient(uri);
     await client.connect();
-
     const result = await client.db(db).collection(collection)
         .insertOne(quote);
     console.log(result);
     client.close;
 }
+
+export async function getQuotes() {
+    const client = new mongodb.MongoClient(uri);
+    await client.connect();
+    const result = await client.db(db).collection(collection)
+        .find({}).toArray();
+    client.close();
+    return result;
+}
+
+export async function addRatingToQuote(id, rating) {
+    const client = new mongodb.MongoClient(uri);
+    await client.connect();
+    const objectId = new mongodb.ObjectId(id);
+    const result = await client.db(db).collection(collection)
+        .updateOne({ _id: objectId }, { $push: { ratings: rating } });
+    console.log(`${result.modifiedCount} for id quote updated`)
+    console.log(result);
+}
+
+//b.student.update({ "subjects": "gkn" }, { $push: { "achieve": 95 } });
+
+// db.students.updateOne(
+//     { _id: 1 },
+//     { $push: { scores: 89 } }
+// )
 async function createMultipleListings(client, newListings) {
     const result = await client.db("sample_airbnb")
         .collection("listingsAndReviews")
